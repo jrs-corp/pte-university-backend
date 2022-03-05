@@ -34,35 +34,35 @@ mycursor.execute(sql, val)
 mydb.commit()
 print(mycursor.rowcount, "Record Inserted")
 
-# # Update Type 1
-sql = 'UPDATE scores SET speaking = %s WHERE useremail = %s'
-val = ('1 2 3','broc@gmail.com')
-mycursor.execute(sql, val)
-mydb.commit()
-print(mycursor.rowcount, "Record Updated")
-
-# # Update Type 2
-# # Reading the data
-sql = 'SELECT * FROM scores WHERE useremail = %s AND username = %s'
-val = ('broc@gmail.com', 'brock')
-mycursor.execute(sql, val)
-myresult = mycursor.fetchone()
-print(mycursor.rowcount, "Record Extracted")
-speaking_fromdb = myresult[4]
-# # Creating list
-speaking_forcode = speaking_fromdb.split(' ')
-speaking_forcode.append('65')
-# # Reverting back to string for db
-speaking_fordb = ' '.join(speaking_forcode)
-sql = 'UPDATE scores SET speaking = %s WHERE useremail = %s'
-val = (speaking_fordb,'broc@gmail.com')
-mycursor.execute(sql, val)
-mydb.commit()
-print(mycursor.rowcount, "Record Updated")
-
-# # Delete Type 1
-sql = 'DELETE FROM scores WHERE useremail = %s AND username = %s'
-val = ('brock@gmail.com', 'brock')
-mycursor.execute(sql, val)
-mydb.commit()
-print(mycursor.rowcount, "Record Deleted")
+# # # Update Type 1
+# sql = 'UPDATE scores SET speaking = %s WHERE useremail = %s'
+# val = ('1 2 3','broc@gmail.com')
+# mycursor.execute(sql, val)
+# mydb.commit()
+# print(mycursor.rowcount, "Record Updated")
+#
+# # # Update Type 2
+# # # Reading the data
+# sql = 'SELECT * FROM scores WHERE useremail = %s AND username = %s'
+# val = ('broc@gmail.com', 'brock')
+# mycursor.execute(sql, val)
+# myresult = mycursor.fetchone()
+# print(mycursor.rowcount, "Record Extracted")
+# speaking_fromdb = myresult[4]
+# # # Creating list
+# speaking_forcode = speaking_fromdb.split(' ')
+# speaking_forcode.append('65')
+# # # Reverting back to string for db
+# speaking_fordb = ' '.join(speaking_forcode)
+# sql = 'UPDATE scores SET speaking = %s WHERE useremail = %s'
+# val = (speaking_fordb,'broc@gmail.com')
+# mycursor.execute(sql, val)
+# mydb.commit()
+# print(mycursor.rowcount, "Record Updated")
+#
+# # # Delete Type 1
+# sql = 'DELETE FROM scores WHERE useremail = %s AND username = %s'
+# val = ('brock@gmail.com', 'brock')
+# mycursor.execute(sql, val)
+# mydb.commit()
+# print(mycursor.rowcount, "Record Deleted")
