@@ -1,6 +1,8 @@
 '''
 main.py
-Author: Sulabh Shrestha
+Author:
+2. Ricardo Chacon
+3. Sulabh Shrestha
 '''
 
 # # Importing Libraries
@@ -33,7 +35,7 @@ val = ('brock', 'broc@gmail.com', 'rick')
 mycursor.execute(sql, val)
 mydb.commit()
 print(mycursor.rowcount, "Record Inserted")
-
+'''
 # # Update Type 1
 sql = 'UPDATE scores SET speaking = %s WHERE useremail = %s'
 val = ('1 2 3','broc@gmail.com')
@@ -66,3 +68,4 @@ val = ('brock@gmail.com', 'brock')
 mycursor.execute(sql, val)
 mydb.commit()
 print(mycursor.rowcount, "Record Deleted")
+'''
