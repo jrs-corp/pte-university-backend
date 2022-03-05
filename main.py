@@ -1,6 +1,8 @@
 '''
 main.py
-Author: Sulabh Shrestha
+Author:
+2. Ricardo Chacon
+3. Sulabh Shrestha
 '''
 
 # # Importing Libraries

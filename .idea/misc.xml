@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
+=======
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+>>>>>>> fa8d2f87900a9dac66e54ced0d37f475fdb55cd4
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (pte-university-backend)" project-jdk-type="Python SDK" />
 </project>
