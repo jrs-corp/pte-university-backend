@@ -1,1 +1,2 @@
 pip install mysql-connector-python==8.0.28
+pip install azure-data-tables==12.2.0
