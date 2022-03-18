@@ -1,24 +1,49 @@
-# from playsound import playsound
-# playsound('song2.mp3')
+# # Importing Libraries
+import configparser
+from playsound import playsound
+from azure.data.tables import TableClient
 
-marks = 0
+# # Importing from other py files
+from update import update
 
-actual_answer = 1887
-print('\n'*30) # # To clear the screen
-sample_answer = input("in recording, when was eifel tower created?")
-if actual_answer == int(sample_answer):
-    print('Right')
-    marks += 1
-else:
-    print('Wrong')
+# # Parsing the configuration file
+config = configparser.ConfigParser()
+config.read('config.ini')
 
-actual_answer2 = 1387
-print('\n'*30) # # To clear the screen
-sample_answer2 = input("eifel tower was created by whom?")
-if actual_answer2 == int(sample_answer2):
-    print('Right')
-    marks +=1
-else:
-    print('Wrong')
+# # Setting up the connection
+connection_string = config['TABLEAPI']['connection_string']
+table_name = config['TABLEAPI']['table_name']
+my_filter = "PartitionKey eq 'Listening'"
+table_client = TableClient.from_connection_string(conn_str=connection_string, table_name=table_name)
+entities = table_client.query_entities(my_filter)
 
-print('Your final marks is: ', marks)
+def listening(email, username, mycursor, mydb):
+    temp_marks = 0
+    # # Looping through the listening questions
+    for entity in entities:
+        temp_answers = entity['Answers'].split(',')
+        # # Showing the question
+        playsound('Audio1.mp3')
+        print(entity['Question'])
+        print(temp_answers)
+        pass_status = True
+
+        # # Listing question from ListQuestion
+        temp_questions = entity['ListQuestion'].split(',')
+
+        for i in range(int(entity['Blanks'])):
+            # # Asking for answers
+            input_answer = input(f'{temp_questions[i]} ')
+            # # We will only give full marks if all the blanks of a certain questions are fullfilled
+            if input_answer == temp_answers[i]:
+                pass_status = True
+            else:
+                pass_status = False
+        if pass_status == True:
+            temp_marks += 1
+        quit_status = input('Do you want to take a break? ')
+        if quit_status == 'Y' or quit_status == 'y':
+            break
+        print('-'*30)
+    print('The final marks: ', temp_marks)
+    update(email, username, mycursor, mydb, 7, 'reading', temp_marks)
