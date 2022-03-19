@@ -13,11 +13,17 @@ Information for code and database
 '''
 
 # # Importing Libraries
-import mysql.connector
+import os
+import sys
+import subprocess
 import configparser
+import mysql.connector
 
 # # Importing from other py files
 from reading import reading
+from listening import listening
+from writing import writing
+# from speaking import speaking
 
 # # Parsing the configuration file
 config = configparser.ConfigParser()
@@ -43,8 +49,24 @@ def main():
     ''')
     if int(user_input) == 1:
         reading('broc@gmail.com', 'brock', mycursor, mydb)
+    elif int(user_input) == 2:
+        listening('broc@gmail.com', 'brock', mycursor, mydb)
+    elif int(user_input) == 3:
+        writing('broc@gmail.com', 'brock', mycursor, mydb)
+    elif int(user_input) == 4:
+        # speaking('broc@gmail.com', 'brock', mycursor, mydb)
+        print("Speaking Module")
+        my_env = os.environ.copy()
+        my_env["FLASK_APP"] = "speaking.py"
+        my_env["FLASK_EMAIL"] = "broc@gmail.com"
+        my_env["FLASK_USR"] = "brock"
+        my_command = "flask run"
+        subprocess.Popen(my_command, env=my_env)
+        # subprocess.run(["set", "FLASK_APP=speaking.py"], shell=True)
+        # subprocess.run(["set", "FLASK_ENV=development"], shell=True)
+        # subprocess.run(["flask", "run"])
     else:
-        print('Coming Soon')
+        print('Wrong Input, Better Luck Next Time')
 
 if __name__=="__main__":
     main()
