@@ -1,15 +1,45 @@
-import requests
-import base64
+# # Importing Libraries
+import configparser
+import mysql.connector
+from azure.data.tables import TableClient
+
+# # Importing from other py files
+from update import update
+
+# # Parsing the configuration file
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+# # Connecting to MYSQL Database
+mydb = mysql.connector.connect(
+  host=config['DATABASE']['host'],
+  user=config['DATABASE']['user'],
+  password=config['DATABASE']['password'],
+  database=config['DATABASE']['database']
+)
+mycursor = mydb.cursor()
+
+# # Setting up the connection
+connection_string = config['TABLEAPI']['connection_string']
+table_name = config['TABLEAPI']['table_name']
+my_filter = "PartitionKey eq 'Speaking'"
+table_client = TableClient.from_connection_string(conn_str=connection_string, table_name=table_name)
+entities = table_client.query_entities(my_filter)
+
+# # Libraries for Speaking API
+import os
 import json
 import time
+import base64
 import random
+import requests
 import azure.cognitiveservices.speech as speechsdk
-
 from flask import Flask, jsonify, render_template, request, make_response
 app = Flask(__name__)
 
-subscription_key = '<SPEECH_SERVICE_SUBSCRIPTION_KEY>'
-region = "<SPEECH_SERVICE_REGION>"
+# # Setting up the configuration for Speaking
+subscription_key = config['SPEAKING']['subscription_key']
+region = config['SPEAKING']['region']
 language = "en-US"
 voice = "Microsoft Server Speech Text to Speech Voice (en-US, JennyNeural)"
 
@@ -29,9 +59,10 @@ def gettoken():
 
 @app.route("/gettonguetwister", methods=["POST"])
 def gettonguetwister():
-    tonguetwisters = ["How much wood would a woodchuck chuck if a woodchuck could chuck wood?",
-            "She sells seashells by the seashore.",
-            "I slit the sheet, the sheet I slit, and on the slitted sheet I sit"]
+    tonguetwisters = []
+    for entity in entities:
+        tonguetwisters.append(entity['Question'])
+    print(tonguetwisters)
     return jsonify({"tt":random.choice(tonguetwisters)})
 
 @app.route("/ackaud", methods=["POST"])
@@ -79,4 +110,24 @@ def ackaud():
 
     #latency = getResponseTime - uploadFinishTime
     #print("Latency = %sms" % int(latency * 1000))
+    # print('response.json()')
+    # print(response.json())
+    temp_data = response.json()
+    # print('temp_data')
+    # print(temp_data)
+    accuracy_score = temp_data['NBest'][0]['AccuracyScore']
+    fluency_score = temp_data['NBest'][0]['FluencyScore']
+    completeness_score = temp_data['NBest'][0]['CompletenessScore']
+    pron_score = temp_data['NBest'][0]['PronScore']
+    temp_score = (accuracy_score + fluency_score + completeness_score + pron_score ) / 4
+    email = os.environ.get('FLASK_EMAIL')
+    username = os.environ.get('FLASK_USR')
+    update(email, username, mycursor, mydb, 4, 'speaking', temp_score)
+
     return response.json()
+
+# print('Test')
+# print(os.environ.get('FLASK_USR'))
+
+if __name__ == '__main__':
+    app.run()

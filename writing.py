@@ -49,4 +49,4 @@ def writing(email, username, mycursor, mydb):
         print('-'*30)
     final_marks = temp_marks * 100 / total_score
     print('The final marks: ', final_marks)
-    update(email, username, mycursor, mydb, 7, 'reading', final_marks)
+    update(email, username, mycursor, mydb, 6, 'writing', final_marks)
