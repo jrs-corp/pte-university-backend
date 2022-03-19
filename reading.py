@@ -40,4 +40,4 @@ def reading(email, username, mycursor, mydb):
             break
         print('-'*30)
     print('The final marks: ', temp_marks)
-    update(email, username, mycursor, mydb, 7, 'reading', temp_marks)
+    update(email, username, mycursor, mydb, 7, 'reading', temp_marks) 
