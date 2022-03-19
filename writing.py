@@ -1,22 +1,52 @@
-import os
+# # Importing Libraries
+import configparser
+from azure.data.tables import TableClient
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.textanalytics import TextAnalyticsClient
 
-def sample_extract_key_phrases():
-    
-    from azure.core.credentials import AzureKeyCredential
-    from azure.ai.textanalytics import TextAnalyticsClient
+# # Importing from other py files
+from update import update
 
-    endpoint = os.environ["AZURE_TEXT_ANALYTICS_ENDPOINT"]
-    key = os.environ["AZURE_TEXT_ANALYTICS_KEY"]
+# # Parsing the configuration file
+config = configparser.ConfigParser()
+config.read('config.ini')
 
-    text_analytics_client = TextAnalyticsClient(endpoint=endpoint, credential=AzureKeyCredential(key))
-    result = text_analytics_client.extract_key_phrases([ "Montreal is North America’s number one host city for international events. Montreal is home to the famous Cirque de Soleil and hosted the Summer Olympics in 1976. Montreal also played host to Expo 67, considered to be the most successful world’s fair in the 20th Century. Montreal has a very vibrant scene with the Montreal International Jazz Festival, the Just For Laughs Festival, the International Fireworks Festival, Les FrancoFolies de Montréal, the Montreal Beer Festival, the Montreal Reggae Festival, the International Film Festival on Art, International Festival of Circus Arts, Divers/Cité Gay and Lesbian Pride, Blue Metropolis International Literary Festival, the Montreal Grand Prix and many, many more." ])
-    answer1 = ['Blue Metropolis International Literary Festival', 'famous Cirque de Soleil', 'number one host city', 'Montreal International Jazz Festival', 'International Fireworks Festival', 'International Film Festival', 'Montreal Beer Festival', 'Montreal Reggae Festival', 'Montreal Grand Prix', 'International Festival', 'international events', 'Laughs Festival', 'North America', 'Summer Olympics', 'successful world', '20th Century', 'vibrant scene', 'Les FrancoFolies', 'Montréal', 'Circus Arts', 'Divers/Cité Gay', 'Lesbian Pride', 'Expo', 'fair']
+# # Setting up the connection
+connection_string = config['TABLEAPI']['connection_string']
+table_name = config['TABLEAPI']['table_name']
+my_filter = "PartitionKey eq 'Writing'"
+table_client = TableClient.from_connection_string(conn_str=connection_string, table_name=table_name)
+entities = table_client.query_entities(my_filter)
+endpoint = config['WRITING']['endpoint']
+key = config['WRITING']['key']
+text_analytics_client = TextAnalyticsClient(endpoint=endpoint, credential=AzureKeyCredential(key))
+
+def writing(email, username, mycursor, mydb):
     temp_marks = 0
-    total_marks = len(answer1)
-    for i in range(len(result[0]['key_phrases'])):
-        if result[0]['key_phrases'][i] in answer1:
-            temp_marks += 1
-    final_marks = temp_marks * 100 / total_marks
+    # # Looping through the writing questions
+    for entity in entities:
+        temp_answers = entity['Answers'].split(',')
+        total_score = entity['Blanks']
+        # # Showing the question
+        print(entity['Question'])
+        print(temp_answers)
+        pass_status = True
 
-if __name__ == '__main__':
-    sample_extract_key_phrases()
+        # # Asking for answers - One time as this in an essay
+        input_answer = input(f"{entity['Question']}: ")
+        articles = [ input_answer ]
+        result = text_analytics_client.extract_key_phrases(articles)
+
+        for i in range(len(result[0]['key_phrases'])):
+            if result[0]['key_phrases'][i] in temp_answers:  # # Check is entity is in db answer or now
+                pass_status = True
+                temp_marks += 1
+            else:
+                pass_status = False
+        # quit_status = input('Do you want to take a break? ')
+        # if quit_status == 'Y' or quit_status == 'y':
+        break
+        print('-'*30)
+    final_marks = temp_marks * 100 / total_score
+    print('The final marks: ', final_marks)
+    update(email, username, mycursor, mydb, 7, 'reading', final_marks)

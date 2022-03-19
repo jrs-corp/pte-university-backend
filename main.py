@@ -20,6 +20,7 @@ import configparser
 from reading import reading
 from listening import listening
 from writing import writing
+from speaking import speaking
 
 # # Parsing the configuration file
 config = configparser.ConfigParser()
@@ -49,8 +50,8 @@ def main():
         listening('broc@gmail.com', 'brock', mycursor, mydb)
     elif int(user_input) == 3:
         writing('broc@gmail.com', 'brock', mycursor, mydb)
-    # elif int(user_input) == 4:
-        # speaking('broc@gmail.com', 'brock', mycursor, mydb)
+    elif int(user_input) == 4:
+        speaking('broc@gmail.com', 'brock', mycursor, mydb)
     else:
         print('Wrong Input, Better Luck Next Time')
 
