@@ -105,7 +105,7 @@ def main():
                 input_row = read(useremail_input, pass_hash, mycursor)
 
                 if input_row != None:
-                    print('Login Successful')
+                    # print('Login Successful')
                     username_input = input_row[1]
 
                     # internal_exit_status = False
@@ -128,8 +128,9 @@ def main():
                     2) Listening
                     3) Writing
                     4) Speaking
-                    5) Log Out
-                    6) Exit the System
+                    5) Your Profile
+                    6) Log Out
+                    7) Exit the System
                     ''')
                     print('-'*30)
 
@@ -147,9 +148,18 @@ def main():
                         my_command = "flask run"
                         subprocess.Popen(my_command, env=my_env)
                     elif int(user_input) == 5:
+                        print('-'*30)
+                        print('Your Profile from Profile: ')
+                        print(f'Your Name: {username_input}')
+                        print(f'Your scores for speaking {input_row[4]}')
+                        print(f'Your scores for listening {input_row[5]}')
+                        print(f'Your scores for writing {input_row[6]}')
+                        print(f'Your scores for reading {input_row[7]}')
+                        print('-'*30)   
+                    elif int(user_input) == 6:
                         print('LogOut Successfully')
                         internal_exit_status = True
-                    elif int(user_input) == 6:
+                    elif int(user_input) == 7:
                         internal_exit_status = True
                         exit_system = True
                     else:

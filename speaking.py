@@ -57,6 +57,27 @@ def gettoken():
     access_token = response.text
     return jsonify({"at":access_token})
 
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+@app.route("/shutdown", methods=["POST"])
+def shutdown():
+    print(''' 
+        Select the module you would like to start:
+                    1) Reading
+                    2) Listening
+                    3) Writing
+                    4) Speaking
+                    5) Your Profile
+                    6) Log Out
+                    7) Exit the System
+    ''')
+    shutdown_server()
+    return 'Server Shutting down'
+
 @app.route("/gettonguetwister", methods=["POST"])
 def gettonguetwister():
     tonguetwisters = []

@@ -17,6 +17,7 @@
     var reftext = document.getElementById('reftext');
     var formcontainer = document.getElementById('formcontainer');
     var ttbutton = document.getElementById('randomtt');
+    var ttquit = document.getElementById('quitt')
     var hbutton = document.getElementById('buttonhear');
     var recordingsList = document.getElementById('recordingsList');
     var ttsList = document.getElementById('ttsList');
@@ -239,6 +240,15 @@
         
         //send request
         request.send(dat);
+    }
+
+    //function for onclick of get tongue twister button
+    ttquit.onclick = function () {
+        var request = new XMLHttpRequest();
+        request.open('POST', '/shutdown', true);
+        //send request
+        request.send();
+        return false;
     }
 
     //function for onclick of get tongue twister button
