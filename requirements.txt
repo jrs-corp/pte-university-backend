@@ -2,3 +2,4 @@ pip install mysql-connector-python==8.0.28
 pip install azure-data-tables==12.2.0
 pip install playsound==1.2.2
 pip install azure-ai-textanalytics --pre
+pip install boto3==1.17.101

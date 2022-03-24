@@ -19,13 +19,15 @@ import subprocess
 import configparser
 import mysql.connector
 from getpass import getpass
+import boto3
+import hashlib
 
 # # Importing from other py files
 from reading import reading
 from listening import listening
 from writing import writing
 # from speaking import speaking
-from read import read, check
+from read import read, check, get
 from insert import insert
 
 # # Parsing the configuration file
@@ -48,6 +50,7 @@ def main():
                     What would you like to do?
                     1) Registration
                     2) Login
+                    3) Forget Password
                 ''')
 
     if int(first_input) ==  1:
@@ -55,6 +58,10 @@ def main():
         username_desired = input('Enter the username:  ')
         useremail_desired = input('Enter the useremail:  ')
         userpassword_desired = getpass('Enter the password: ')
+
+        # pass_hash = hashlib.md5(str(userpassword_desired).encode('utf-8')).hexdigest()
+        # print(pass_hash)
+
 
         # # Check if it already exists or not
         existing_row = check(useremail_desired, username_desired, mycursor)
@@ -100,6 +107,84 @@ def main():
                 print('Wrong Input, Better Luck Next Time')
         else:
             print('Login failed')
+    elif int(first_input) == 3:
+        print('You forgot your password')
+        forgot_email = input('Enter the useremail:  ')
+
+        # sql = 'SELECT userpassword FROM scores WHERE useremail = %s'
+        # val = (forgot_email,)
+        # mycursor.execute(sql, val)
+        # input_row = mycursor.fetchone()
+        input_row = get(forgot_email, mycursor)
+        print(input_row)
+        if input_row == None:
+            print('Liar')
+            
+        else:
+            password=input_row[0]
+            print(password)
+
+            # # Setting up Values for SES
+            SENDER = "Sulabh Shrestha <tsulabh4@gmail.com>"
+            # RECIPIENT = "sulabhshrestha@outlook.com"
+            RECIPIENT = forgot_email
+            AWS_REGION = "us-east-1"
+            SUBJECT = "PTE University"
+            SUCCESS_BODY_TEXT = ("Status of the Document\r\n"
+                        "Your file has been uploaded successfully"
+                        )
+            FAILURE_BODY_TEXT = ("Status of the Document\r\n"
+                        "Your file hasn't been uploaded successfully"
+                        )
+            SUCCESS_BODY_HTML = f"""<html>
+            <head></head>
+            <body>
+            <h1>PTE University</h1>
+            <p>Your password is {password}</p>
+            </body>
+            </html>
+                        """            
+            FAILURE_BODY_HTML = """<html>
+            <head></head>
+            <body>
+            <h1>PTE University</h1>
+            <p>Failure</p>
+            </body>
+            </html>
+                        """            
+            CHARSET = "UTF-8"
+            
+            # # Setting up boto3 client
+            client = boto3.client('ses',
+            aws_access_key_id=config['AWS']['aws_access_key_id'],
+            aws_secret_access_key=config['AWS']['aws_secret_access_key'],
+            region_name=AWS_REGION)
+
+            # # Send Email to the recipient
+            response = client.send_email(
+                Destination={
+                    'ToAddresses': [
+                        RECIPIENT,
+                    ],
+                },
+                Message={
+                    'Body': {
+                        'Html': {
+                            'Charset': CHARSET,
+                            'Data': SUCCESS_BODY_HTML,
+                        },
+                        'Text': {
+                            'Charset': CHARSET,
+                            'Data': SUCCESS_BODY_TEXT,
+                        },
+                    },
+                    'Subject': {
+                        'Charset': CHARSET,
+                        'Data': SUBJECT,
+                    },
+                },
+                Source=SENDER,
+            )
 
 if __name__=="__main__":
     main()
