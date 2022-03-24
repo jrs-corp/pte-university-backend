@@ -18,3 +18,10 @@ def get(forgot_email, mycursor):
     mycursor.execute(sql, val)
     input_row = mycursor.fetchone()
     return input_row
+
+def set(password, email, mycursor, mydb):
+    sql = 'UPDATE scores SET userpassword = %s WHERE useremail = %s'
+    val = (password, email)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    return int(mycursor.rowcount)

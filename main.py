@@ -21,13 +21,15 @@ import mysql.connector
 from getpass import getpass
 import boto3
 import hashlib
+import random
+import string
 
 # # Importing from other py files
 from reading import reading
 from listening import listening
 from writing import writing
 # from speaking import speaking
-from read import read, check, get
+from read import read, check, get, set
 from insert import insert
 
 # # Parsing the configuration file
@@ -59,14 +61,13 @@ def main():
         useremail_desired = input('Enter the useremail:  ')
         userpassword_desired = getpass('Enter the password: ')
 
-        # pass_hash = hashlib.md5(str(userpassword_desired).encode('utf-8')).hexdigest()
+        pass_hash = hashlib.md5(str(userpassword_desired).encode('utf-8')).hexdigest()
         # print(pass_hash)
-
 
         # # Check if it already exists or not
         existing_row = check(useremail_desired, username_desired, mycursor)
         if existing_row == None:
-            rowcount = insert(username_desired, useremail_desired, userpassword_desired, mycursor, mydb)
+            rowcount = insert(username_desired, useremail_desired, pass_hash, mycursor, mydb)
             if rowcount == 1:
                 print('Registration Successful')
             else:
@@ -78,7 +79,8 @@ def main():
         print('Login Begins')
         useremail_input = input('Enter the useremail:  ')
         userpassword_input = getpass('Enter the password: ')
-        input_row = read(useremail_input, userpassword_input, mycursor)
+        pass_hash = hashlib.md5(str(userpassword_input).encode('utf-8')).hexdigest()
+        input_row = read(useremail_input, pass_hash, mycursor)
         if input_row != None:
             print('Login Successful')
             username_input = input_row[1]
@@ -109,21 +111,31 @@ def main():
             print('Login failed')
     elif int(first_input) == 3:
         print('You forgot your password')
+
+        print('Random string')
+        letters = string.ascii_lowercase
+        random_password=''.join(random.choice(letters) for i in range(10))
+        pass_hash = hashlib.md5(str(random_password).encode('utf-8')).hexdigest()
         forgot_email = input('Enter the useremail:  ')
 
         # sql = 'SELECT userpassword FROM scores WHERE useremail = %s'
         # val = (forgot_email,)
         # mycursor.execute(sql, val)
         # input_row = mycursor.fetchone()
-        input_row = get(forgot_email, mycursor)
+        input_row = set(pass_hash, forgot_email, mycursor, mydb)
         print(input_row)
-        if input_row == None:
+        # if input_row == None:
+        #     print('Liar')
+            
+        # else:
+        #     password=input_row[0]
+        #     print(password)
+        if input_row == 0:
             print('Liar')
             
         else:
-            password=input_row[0]
-            print(password)
-
+            # password=input_row[0]
+            # print(password)
             # # Setting up Values for SES
             SENDER = "Sulabh Shrestha <tsulabh4@gmail.com>"
             # RECIPIENT = "sulabhshrestha@outlook.com"
@@ -140,7 +152,7 @@ def main():
             <head></head>
             <body>
             <h1>PTE University</h1>
-            <p>Your password is {password}</p>
+            <p>Your password is {random_password}</p>
             </body>
             </html>
                         """            
