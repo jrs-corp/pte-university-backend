@@ -15,22 +15,22 @@ Information for code and database
 # # Importing Libraries
 import os
 import sys
+import boto3
+import random
+import string
+import hashlib
 import subprocess
 import configparser
 import mysql.connector
 from getpass import getpass
-import boto3
-import hashlib
-import random
-import string
 
 # # Importing from other py files
+from insert import insert
+from writing import writing
 from reading import reading
 from listening import listening
-from writing import writing
 # from speaking import speaking
 from read import read, check, get, set
-from insert import insert
 
 # # Parsing the configuration file
 config = configparser.ConfigParser()
@@ -45,205 +45,170 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 
+# # Setting up Values for Simple Email Service (SES)
+SENDER = config['EMAIL']['sender_email']
+AWS_REGION = config['EMAIL']['aws_region']
+SUBJECT = "PTE University"
+SUCCESS_BODY_TEXT = ("Status of the Password\r\n"
+            "Your password success status"
+            )
+FAILURE_BODY_TEXT = ("Status of the Password\r\n"
+            "Your password failure status"
+            )
+
+# # The main function from which our program runs
 def main():
     print('Welcome to PTE University')
 
-    first_input = input('''
-                    What would you like to do?
-                    1) Registration
-                    2) Login
-                    3) Forget Password
-                ''')
+    exit_system = False
+    while exit_system == False:
 
-    if int(first_input) ==  1:
-        print('Registration Begins')
-        username_desired = input('Enter the username:  ')
-        useremail_desired = input('Enter the useremail:  ')
-        userpassword_desired = getpass('Enter the password: ')
+        first_input = input('''
+                        What would you like to do?
+                        1) Registration
+                        2) Login
+                        3) Forget Password
+                        4) Exit the System
+                    ''')
+        
+        if int(first_input) ==  1:
 
-        pass_hash = hashlib.md5(str(userpassword_desired).encode('utf-8')).hexdigest()
-        # print(pass_hash)
+            print('Registration')
+            username_desired = input('Enter the username:  ')
+            useremail_desired = input('Enter the useremail:  ')
+            userpassword_desired = getpass('Enter the password: ')
+            pass_hash = hashlib.md5(str(userpassword_desired).encode('utf-8')).hexdigest()
 
-        # # Check if it already exists or not
-        existing_row = check(useremail_desired, username_desired, mycursor)
-        if existing_row == None:
-            rowcount = insert(username_desired, useremail_desired, pass_hash, mycursor, mydb)
-            if rowcount == 1:
-                print('Registration Successful')
+            # # Check if it already exists or not
+            existing_row = check(useremail_desired, username_desired, mycursor)
+            if existing_row == None:
+                rowcount = insert(username_desired, useremail_desired, pass_hash, mycursor, mydb)
+                if rowcount == 1:
+                    print('Registration Successful')
+                    first_input = 2
+                else:
+                    print('Registration Failed')
             else:
-                print('Registration Failed')
-        else:
-            print('Registration Failed, the name or email already exists')
+                print('Registration Failed, the name or email already exists')
 
-    elif int(first_input) == 2:
-        print('Login Begins')
-        useremail_input = input('Enter the useremail:  ')
-        userpassword_input = getpass('Enter the password: ')
-        pass_hash = hashlib.md5(str(userpassword_input).encode('utf-8')).hexdigest()
-        input_row = read(useremail_input, pass_hash, mycursor)
-        if input_row != None:
-            print('Login Successful')
-            username_input = input_row[1]
+        elif int(first_input) == 2:
 
-            user_input = input(''' 
-            Select the module you would like to start:
-            1) Reading
-            2) Listening
-            3) Writing
-            4) Speaking
-            ''')
-            if int(user_input) == 1:
-                reading(useremail_input, username_input, mycursor, mydb)
-            elif int(user_input) == 2:
-                listening(useremail_input, username_input, mycursor, mydb)
-            elif int(user_input) == 3:
-                writing(useremail_input, username_input, mycursor, mydb)
-            elif int(user_input) == 4:
-                my_env = os.environ.copy()
-                my_env["FLASK_APP"] = "speaking.py"
-                my_env["FLASK_EMAIL"] = useremail_input
-                my_env["FLASK_USR"] = username_input
-                my_command = "flask run"
-                subprocess.Popen(my_command, env=my_env)
+            print('Login')
+            useremail_input = input('Enter the useremail:  ')
+            userpassword_input = getpass('Enter the password: ')
+            pass_hash = hashlib.md5(str(userpassword_input).encode('utf-8')).hexdigest()
+            input_row = read(useremail_input, pass_hash, mycursor)
+
+            if input_row != None:
+                print('Login Successful')
+                username_input = input_row[1]
+
+                internal_exit_status = False
+                while internal_exit_status == False:
+
+                    user_input = input(''' 
+                    Select the module you would like to start:
+                    1) Reading
+                    2) Listening
+                    3) Writing
+                    4) Speaking
+                    5) Log Out
+                    6) Exit the System
+                    ''')
+                    
+                    if int(user_input) == 1:
+                        reading(useremail_input, username_input, mycursor, mydb)
+                    elif int(user_input) == 2:
+                        listening(useremail_input, username_input, mycursor, mydb)
+                    elif int(user_input) == 3:
+                        writing(useremail_input, username_input, mycursor, mydb)
+                    elif int(user_input) == 4:
+                        my_env = os.environ.copy()
+                        my_env["FLASK_APP"] = "speaking.py"
+                        my_env["FLASK_EMAIL"] = useremail_input
+                        my_env["FLASK_USR"] = username_input
+                        my_command = "flask run"
+                        subprocess.Popen(my_command, env=my_env)
+                    elif int(user_input) == 5:
+                        internal_exit_status = True
+                    elif int(user_input) == 6:
+                        internal_exit_status = True
+                        exit_system = True
+                    else:
+                        print('Wrong Input, Better Luck Next Time')
             else:
-                print('Wrong Input, Better Luck Next Time')
-        else:
-            print('Login failed')
-    elif int(first_input) == 3:
-        print('You forgot your password')
+                print('Login failed')
 
-        print('Random string')
-        letters = string.ascii_lowercase
-        random_password=''.join(random.choice(letters) for i in range(10))
-        pass_hash = hashlib.md5(str(random_password).encode('utf-8')).hexdigest()
-        forgot_email = input('Enter the useremail:  ')
+        elif int(first_input) == 3:
 
-        # sql = 'SELECT userpassword FROM scores WHERE useremail = %s'
-        # val = (forgot_email,)
-        # mycursor.execute(sql, val)
-        # input_row = mycursor.fetchone()
-        input_row = set(pass_hash, forgot_email, mycursor, mydb)
-        print(input_row)
-        # if input_row == None:
-        #     print('Liar')
+            print('You forgot your password')
+            letters = string.ascii_lowercase
+            random_password=''.join(random.choice(letters) for i in range(10))
+            pass_hash = hashlib.md5(str(random_password).encode('utf-8')).hexdigest()
+            forgot_email = input('Enter the useremail:  ')
+            input_row = set(pass_hash, forgot_email, mycursor, mydb)
             
-        # else:
-        #     password=input_row[0]
-        #     print(password)
-        if input_row == 0:
-            print('Liar')
-            
-        else:
-            # password=input_row[0]
-            # print(password)
-            # # Setting up Values for SES
-            SENDER = "Sulabh Shrestha <tsulabh4@gmail.com>"
-            # RECIPIENT = "sulabhshrestha@outlook.com"
-            RECIPIENT = forgot_email
-            AWS_REGION = "us-east-1"
-            SUBJECT = "PTE University"
-            SUCCESS_BODY_TEXT = ("Status of the Document\r\n"
-                        "Your file has been uploaded successfully"
-                        )
-            FAILURE_BODY_TEXT = ("Status of the Document\r\n"
-                        "Your file hasn't been uploaded successfully"
-                        )
-            SUCCESS_BODY_HTML = f"""<html>
-            <head></head>
-            <body>
-            <h1>PTE University</h1>
-            <p>Your password is {random_password}</p>
-            </body>
-            </html>
-                        """            
-            FAILURE_BODY_HTML = """<html>
-            <head></head>
-            <body>
-            <h1>PTE University</h1>
-            <p>Failure</p>
-            </body>
-            </html>
-                        """            
-            CHARSET = "UTF-8"
-            
-            # # Setting up boto3 client
-            client = boto3.client('ses',
-            aws_access_key_id=config['AWS']['aws_access_key_id'],
-            aws_secret_access_key=config['AWS']['aws_secret_access_key'],
-            region_name=AWS_REGION)
+            if input_row == 0:
+                print('Liar, you dont have your email registered')
+            else:
+                RECIPIENT = forgot_email
+                SUCCESS_BODY_HTML = f"""<html>
+                <head></head>
+                <body>
+                <h1>PTE University</h1>
+                <p>Your password is {random_password}</p>
+                </body>
+                </html>
+                            """            
+                FAILURE_BODY_HTML = """<html>
+                <head></head>
+                <body>
+                <h1>PTE University</h1>
+                <p>Failure</p>
+                </body>
+                </html>
+                            """            
+                CHARSET = "UTF-8"
+                
+                # # Setting up boto3 client
+                client = boto3.client('ses',
+                aws_access_key_id=config['AWS']['aws_access_key_id'],
+                aws_secret_access_key=config['AWS']['aws_secret_access_key'],
+                region_name=AWS_REGION)
 
-            # # Send Email to the recipient
-            response = client.send_email(
-                Destination={
-                    'ToAddresses': [
-                        RECIPIENT,
-                    ],
-                },
-                Message={
-                    'Body': {
-                        'Html': {
-                            'Charset': CHARSET,
-                            'Data': SUCCESS_BODY_HTML,
+                # # Send Email to the recipient
+                response = client.send_email(
+                    Destination={
+                        'ToAddresses': [
+                            RECIPIENT,
+                        ],
+                    },
+                    Message={
+                        'Body': {
+                            'Html': {
+                                'Charset': CHARSET,
+                                'Data': SUCCESS_BODY_HTML,
+                            },
+                            'Text': {
+                                'Charset': CHARSET,
+                                'Data': SUCCESS_BODY_TEXT,
+                            },
                         },
-                        'Text': {
+                        'Subject': {
                             'Charset': CHARSET,
-                            'Data': SUCCESS_BODY_TEXT,
+                            'Data': SUBJECT,
                         },
                     },
-                    'Subject': {
-                        'Charset': CHARSET,
-                        'Data': SUBJECT,
-                    },
-                },
-                Source=SENDER,
-            )
+                    Source=SENDER,
+                )
+                print('Your new password has sent to your email')
+                first_input = 2
+        elif int(first_input) == 4:
+            exit_system = True
+        else:
+            print('You entered the wrong key')
+            exit_system = True
+
 
 if __name__=="__main__":
     main()
-
-# # # Insert Type 1
-# sql = 'INSERT INTO scores (username, useremail, userpassword, speaking, listening, writing, reading) VALUES (%s, %s, %s, %s, %s, %s, %s)'
-# val = ('brock', 'brock@gmail.com', 'rick', '1 2 3', '4 3 5', '6 4 3', '7 6 6')
-# mycursor.execute(sql, val)
-# mydb.commit()
-# print(mycursor.rowcount, "Record Inserted")
-
-# # # Insert Type 2
-# sql = 'INSERT INTO scores (username, useremail, userpassword, speaking, listening, writing, reading) VALUES (%s, %s, %s, %s, %s, %s, %s)'
-# val = ('brock', 'broc@gmail.com', 'rick', '0', '0', '0', '0')
-# mycursor.execute(sql, val)
-# mydb.commit()
-# print(mycursor.rowcount, "Record Inserted")
-
-# # # Update Type 1
-# sql = 'UPDATE scores SET speaking = %s WHERE useremail = %s'
-# val = ('1 2 3','broc@gmail.com')
-# mycursor.execute(sql, val)
-# mydb.commit()
-# print(mycursor.rowcount, "Record Updated")
-#
-# # # Update Type 2
-# # # Reading the data
-# sql = 'SELECT * FROM scores WHERE useremail = %s AND username = %s'
-# val = ('brock@gmail.com', 'brock')
-# mycursor.execute(sql, val)
-# myresult = mycursor.fetchone()
-# print(mycursor.rowcount, "Record Extracted")
-# speaking_fromdb = myresult[4]
-# # # Creating list
-# speaking_forcode = speaking_fromdb.split(' ')
-# speaking_forcode.append('65')
-# # # Reverting back to string for db
-# speaking_fordb = ' '.join(speaking_forcode)
-# sql = 'UPDATE scores SET speaking = %s WHERE useremail = %s'
-# val = (speaking_fordb,'broc@gmail.com')
-# mycursor.execute(sql, val)
-# mydb.commit()
-# print(mycursor.rowcount, "Record Updated")
-#
-# # # Delete Type 1
-# sql = 'DELETE FROM scores WHERE useremail = %s AND username = %s'
-# val = ('brock@gmail.com', 'brock')
-# mycursor.execute(sql, val)
-# mydb.commit()
-# print(mycursor.rowcount, "Record Deleted")
