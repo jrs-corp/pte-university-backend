@@ -1,5 +1,27 @@
-pip install mysql-connector-python==8.0.28
-pip install azure-data-tables==12.2.0
-pip install playsound==1.2.2
-pip install azure-ai-textanalytics --pre
-pip install boto3==1.17.101
+astroid==2.11.2
+azure-cognitiveservices-speech==1.20.0
+certifi==2021.10.8
+chardet==4.0.0
+click==8.0.4
+colorama==0.4.4
+Flask==2.0.3
+idna==3.3
+isort==5.10.1
+itsdangerous==2.1.2
+Jinja2==3.0.3
+lazy-object-proxy==1.7.1
+MarkupSafe==2.1.0
+mccabe==0.7.0
+pylint==2.13.2
+requests==2.27.1
+six==1.16.0
+toml==0.10.2
+typed-ast==1.5.2
+urllib3==1.26.8
+Werkzeug==2.0.3
+wrapt==1.14.0
+mysql-connector-python==8.0.28
+azure-data-tables==12.2.0
+playsound==1.2.2
+azure-ai-textanalytics --pre
+boto3==1.17.101
