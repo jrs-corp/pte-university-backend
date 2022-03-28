@@ -25,6 +25,7 @@ def listening(email, username, mycursor, mydb):
     for entity in entities:
         temp_answers = entity['Answers'].split(',')
         # # Showing the question
+        print('Playing Audio ...')
         playsound('Audio1.mp3')
         print(entity['Question'])
         print(temp_answers)
