@@ -18,6 +18,8 @@ entities = table_client.query_entities(my_filter)
 
 def reading(email, username, mycursor, mydb):
     temp_marks = 0
+    total_marks = 0
+    percent_marks = 0
     # # Looping through the reading questions
     for entity in entities:
         temp_answers = entity['Answers'].split(',')
@@ -35,9 +37,12 @@ def reading(email, username, mycursor, mydb):
                 pass_status = False
         if pass_status == True:
             temp_marks += 1
+        total_marks += 1
         quit_status = input('Do you want to take a break? ')
         if quit_status == 'Y' or quit_status == 'y':
             break
         print('-'*30)
     print('The final marks: ', temp_marks)
-    update(email, username, mycursor, mydb, 7, 'reading', temp_marks) 
+    percent_marks = (temp_marks / total_marks)*100
+    print('The percent marks: ', percent_marks)
+    update(email, username, mycursor, mydb, 7, 'reading', percent_marks) 
