@@ -58,7 +58,7 @@ FAILURE_BODY_TEXT = ("Status of the Password\r\n"
 
 # # The main function from which our program runs
 def main():
-    print('Welcome to PTE University')
+    print('Welcome to PTE University.')
 
     exit_system = False
     while exit_system == False:
