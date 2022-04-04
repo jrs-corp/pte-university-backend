@@ -16,20 +16,46 @@ my_filter = "PartitionKey eq 'Reading'"
 table_client = TableClient.from_connection_string(conn_str=connection_string, table_name=table_name)
 entities = table_client.query_entities(my_filter)
 
+
 def reading(email, username, mycursor, mydb):
+    # header
+    print('\n')
+    print(' ╔' + ('-' * 149) + '╗')
+    print(' ¦' + (' ' * 60) + 'PTE PRACTICE - READING' + (' ' * 67) + '¦')
+    print(' ╚' + ('-' * 149) + '╝')
+    print('\n')
+
     temp_marks = 0
     total_marks = 0
     percent_marks = 0
     # # Looping through the reading questions
     for entity in entities:
         temp_answers = entity['Answers'].split(',')
-        # # Showing the question
-        print(entity['Question'])
-        print(temp_answers)
+        # Showing the question
+        # print(entity['Question'])
+        counter_word = 0
+        counter = 0
+        wrapped = ' '
+        string = entity['Question']
+        print("         ╔" + "-" * 126 + "╗")
+        print("         ¦" + " " * 126 + "¦")
+        for word in string.split():
+            counter_word += 1
+            counter += 1
+            wrapped = wrapped + word + ' '
+            if counter == 13 or counter_word == len(string.split()):   # display 18 words per line
+                pad = 121 - len(wrapped)
+                print(f"         ¦   {wrapped} {' ' * pad} ¦")
+                counter = 0
+                wrapped = ' '
+        # print(f"         {temp_answers}") # hide for screenshot later
         pass_status = True
+        print("         ¦" + " " * 126 + "¦")
+        print("         ╚" + "-" * 126 + "╝")
+        print('\n')
         for i in range(int(entity['Blanks'])):
             # # Asking for answers
-            input_answer = input(f'Enter the answer for blank number {i+1}: ')
+            input_answer = input(f'                        Enter the answer for blank number ({i + 1}): ')
             # # We will only give full marks if all the blanks of a certain questions are fullfilled
             if input_answer == temp_answers[i]:
                 pass_status = True
@@ -38,11 +64,15 @@ def reading(email, username, mycursor, mydb):
         if pass_status == True:
             temp_marks += 1
         total_marks += 1
-        quit_status = input('Do you want to take a break? ')
+        print('\n')
+        quit_status = input('                        Do you want to take a break? ')
+        print('\n')
+        print('\n' * 10)
         if quit_status == 'Y' or quit_status == 'y':
             break
-        print('-'*30)
-    print('The final marks: ', temp_marks)
-    percent_marks = (temp_marks / total_marks)*100
-    print('The percent marks: ', percent_marks)
-    update(email, username, mycursor, mydb, 7, 'reading', percent_marks) 
+        # print('-'*30)
+    print('\n')
+    print('                        The final marks      : ', temp_marks)
+    percent_marks = (temp_marks / total_marks) * 100
+    print('                        The percent marks    : ', percent_marks)
+    update(email, username, mycursor, mydb, 7, 'reading', percent_marks)

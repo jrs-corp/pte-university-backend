@@ -58,26 +58,51 @@ FAILURE_BODY_TEXT = ("Status of the Password\r\n"
 
 # # The main function from which our program runs
 def main():
-    print('Welcome to PTE University.')
+    print(' '+'-' * 150)
+    print(' '+'*' * 150)
+    print('\n')
+    print('\n')
+    print('                                                              Welcome to PTE University')
+    print('\n')
+    print('\n')
+    print(' '+'*' * 150)
+    #print('-' * 150)
 
     exit_system = False
     while exit_system == False:
-        print('-'*30)
-        first_input = input('''
-                        What would you like to do?
-                        1) Registration
-                        2) Login
-                        3) Forget Password
-                        4) About Us
-                        5) Exit the System
-                    ''')
-        print('-'*30)
+        print(' ╔'+('-' * 149)+'╗')
+        print(' ¦                                                                  MAIN MENU'+(' ' * 74)+'¦')
+        print(' ¦'+('-' * 149)+'¦')
+        print(' ¦' + (' ' * 149) + '¦')
+        print(' ¦                [1] Registration        [2] Login               [3] Forget Password     [4] About Us            [5] Exit the System                  ¦')
+        print(' ¦' + (' ' * 149) + '¦')
+        print(' ╚'+('-' * 149)+ '╝')
+        print('\n')
+        first_input = input('                        What would you like to do? ')
+        print('\n' * 10)
+        # print('-'*30)
+        #first_input = input('''
+        #                What would you like to do?
+        #                    [1] Registration
+        #                    [2] Login
+        #                    [3] Forget Password
+        #                    [4] About Us
+        #                    [5] Exit the System
+        #
+        #
+        #                I want to: ''')
+        #print('-'*30)
+        print('\n')
         if int(first_input) ==  1:
-
-            print('Registration')
-            username_desired = input('Enter the username:  ')
-            useremail_desired = input('Enter the useremail:  ')
-            userpassword_desired = getpass('Enter the password: ')
+            print(' ╔'+('-' * 149)+'╗')
+            print(' ¦' + (' ' * 65) + 'REGISTRATION' + (' ' * 72) + '¦')
+            print(' ╚'+('-' * 149)+ '╝')
+            print('\n')
+            # print('Registration')
+            username_desired = input('                        Enter the User Name  :  ')
+            useremail_desired = input('                        Enter the User Email :  ')
+            userpassword_desired = getpass('                        Enter the Password   : ')
+            print('\n')
             pass_hash = hashlib.md5(str(userpassword_desired).encode('utf-8')).hexdigest()
 
             # # Check if it already exists or not
@@ -85,18 +110,24 @@ def main():
             if existing_row == None:
                 rowcount = insert(username_desired, useremail_desired, pass_hash, mycursor, mydb)
                 if rowcount == 1:
-                    print('Registration Successful')
+                    print('                        Registration Successful!')
                     first_input = 2
                 else:
-                    print('Registration Failed')
+                    print('                        Registration Failed!')
             else:
-                print('Registration Failed, the name or email already exists')
-
+                print('                        Registration Failed, the name or email already exists!')
+            print('\n')
+            print('\n' * 10)
         elif int(first_input) == 2:
+            print(' ╔' + ('-' * 149) + '╗')
+            print(' ¦' + (' ' * 69) + 'LOGIN' + (' ' * 75) + '¦')
+            print(' ╚' + ('-' * 149) + '╝')
+            #print('Login')
+            print('\n')
+            useremail_input = input('                        Enter the User Name    :  ')
+            userpassword_input = getpass('                        Enter the Password    : ')
+            print('\n')
 
-            print('Login')
-            useremail_input = input('Enter the useremail:  ')
-            userpassword_input = getpass('Enter the password: ')
             pass_hash = hashlib.md5(str(userpassword_input).encode('utf-8')).hexdigest()
 
             internal_exit_status = False
@@ -111,28 +142,49 @@ def main():
                     # internal_exit_status = False
                     # while internal_exit_status == False:
 
-                    print('-'*30)
-                    print('Your Profile: ')
-                    print(f'Your Name: {username_input}')
-                    print(f'Your scores for speaking {input_row[4]}')
-                    print(f'Your scores for listening {input_row[5]}')
-                    print(f'Your scores for writing {input_row[6]}')
-                    print(f'Your scores for reading {input_row[7]}')
-                    print('-'*30)
+                    #print('-'*30)
+                    print('\n')
+                    print(' ╔' + ('-' * 149) + '╗')
+                    print(' ¦' + (' ' * 63) + 'PROFILE SUMMARY' + (' ' * 71) + '¦')
+                    print(' ╚' + ('-' * 149) + '╝')
+                    print('\n')
+                    # print('                        Your Profile: ')
+                    print(f'                        Your Name: {username_input}')
+                    print('\n')
+                    print('                        SCORES:')
+                    print(f'                                Speaking    : {input_row[4]}')
+                    print(f'                                Listening   : {input_row[5]}')
+                    print(f'                                Writing     : {input_row[6]}')
+                    print(f'                                Reading     : {input_row[7]}')
+                    #print('-'*30)
+                    print('\n')
+                    print('\n')
 
-                    print('-'*30)
-                    user_input = input(''' 
-                    
-                    Select the module you would like to start:
-                    1) Reading
-                    2) Listening
-                    3) Writing
-                    4) Speaking
-                    5) Your Profile
-                    6) Log Out
-                    7) Exit the System
-                    ''')
-                    print('-'*30)
+                    #print('-'*30)
+                    print(' ╔' + ('-' * 149) + '╗')
+                    print(' ¦                                                                  MAIN MENU' + (
+                                ' ' * 74) + '¦')
+                    print(' ¦' + ('-' * 149) + '¦')
+                    print(' ¦' + (' ' * 149) + '¦')
+                    print(
+                        ' ¦        [1] Reading        [2] Listening      [3] Writing        [4] Speaking       [5] Profile        [6] Log Out        [7] Exit the System        ¦')
+                    print(' ¦' + (' ' * 149) + '¦')
+                    print(' ╚' + ('-' * 149) + '╝')
+                    print('\n')
+                    user_input = input('                        What do you want to do next? ')
+                    print('\n' * 10)
+                    #user_input = input('''
+                    #
+                    #Select the module you would like to start:
+                    #1) Reading
+                    #2) Listening
+                    #3) Writing
+                    #4) Speaking
+                    #5) Your Profile
+                    #6) Log Out
+                    #7) Exit the System
+                    #''')
+                    #print('-'*30)
 
                     if int(user_input) == 1:
                         reading(useremail_input, username_input, mycursor, mydb)
@@ -148,16 +200,28 @@ def main():
                         my_command = "flask run"
                         subprocess.Popen(my_command, env=my_env)
                     elif int(user_input) == 5:
-                        print('-'*30)
-                        print('Your Profile from Profile: ')
-                        print(f'Your Name: {username_input}')
-                        print(f'Your scores for speaking {input_row[4]}')
-                        print(f'Your scores for listening {input_row[5]}')
-                        print(f'Your scores for writing {input_row[6]}')
-                        print(f'Your scores for reading {input_row[7]}')
-                        print('-'*30)   
+                        print('\n') # skip below processing
+                        # print('-'*30)
+                        # print('Your Profile from Profile: ')
+                        # print(f'Your Name: {username_input}')
+                        # print(f'Your scores for speaking {input_row[4]}')
+                        # print(f'Your scores for listening {input_row[5]}')
+                        # print(f'Your scores for writing {input_row[6]}')
+                        # print(f'Your scores for reading {input_row[7]}')
+                        # print('-'*30)
                     elif int(user_input) == 6:
-                        print('LogOut Successfully')
+                        print(' ' + '-' * 150)
+                        print(' ' + '*' * 150)
+                        print('\n')
+                        print('\n')
+                        print('                                                              Welcome to PTE University')
+                        print('\n')
+                        print('\n')
+                        print(' ' + '*' * 150)
+                        print(' ' + '-' * 150)
+                        print('\n')
+                        print('                        LogOut Successfully!')
+                        print('\n')
                         internal_exit_status = True
                     elif int(user_input) == 7:
                         internal_exit_status = True
@@ -166,19 +230,28 @@ def main():
                         print('Wrong Input, Better Luck Next Time')
                 else:
                     internal_exit_status = True
-                    print('Login failed')
+                    print('                        Login failed! ')
+                    print('\n')
+                    print('\n' * 10)
 
         elif int(first_input) == 3:
-
-            print('You forgot your password')
+            print('\n')
+            print(' ╔' + ('-' * 149) + '╗')
+            print(' ¦' + (' ' * 65) + 'RESET PASSWORD' + (' ' * 70) + '¦')
+            print(' ╚' + ('-' * 149) + '╝')
+            print('\n')
+            # print('You forgot your password')
             letters = string.ascii_lowercase
             random_password=''.join(random.choice(letters) for i in range(10))
             pass_hash = hashlib.md5(str(random_password).encode('utf-8')).hexdigest()
-            forgot_email = input('Enter the useremail:  ')
+            forgot_email = input('                        Enter the useremail:  ')
+            print('\n')
             input_row = set(pass_hash, forgot_email, mycursor, mydb)
             
             if input_row == 0:
-                print('Liar, you dont have your email registered')
+                # print('Liar, you dont have your email registered') #lol
+                print('                        The email address don''t exist in our database.')
+                print('\n' * 10)
             else:
                 RECIPIENT = forgot_email
                 SUCCESS_BODY_HTML = f"""<html>
@@ -230,19 +303,29 @@ def main():
                     },
                     Source=SENDER,
                 )
-                print('Your new password has sent to your email')
+                print('                        Your new password was sent to your email.')
+                print('\n')
+                print('\n' * 10)
                 first_input = 2
         elif int(first_input) == 4:
+            print('\n')
+            print(' ╔' + ('-' * 149) + '╗')
+            print(' ¦' + (' ' * 67) + 'ABOUT US' + (' ' * 74) + '¦')
+            print(' ╚' + ('-' * 149) + '╝')
+            print('\n')
             print('''
-            Developed By:
-                1. Jamelah Guimba: Our Description Here
-                2. Ricardo Chacon: Our Description Here
-                3. Sulabh Shrestha: Our Description Here
+                        Developed By:
+                                        1. Jamelah Guimba
+                                        2. Ricardo Chacon
+                                        3. Sulabh Shrestha
             ''')
+            print('\n')
+            print('\n' * 10)
         elif int(first_input) == 5:
             exit_system = True
         else:
-            print('You entered the wrong key')
+            print('                        You entered the wrong key! Please try again.')
+            print('\n')
 
 if __name__=="__main__":
     main()

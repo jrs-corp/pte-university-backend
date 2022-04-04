@@ -5,6 +5,12 @@ from azure.data.tables import TableClient
 
 # # Importing from other py files
 from update import update
+# header
+print('\n')
+print(' ╔' + ('-' * 149) + '╗')
+print(' ¦' + (' ' * 59) + 'PTE PRACTICE - SPEAKING' + (' ' * 67) + '¦')
+print(' ╚' + ('-' * 149) + '╝')
+print('\n')
 
 # # Parsing the configuration file
 config = configparser.ConfigParser()
@@ -65,16 +71,28 @@ def shutdown_server():
 
 @app.route("/shutdown", methods=["POST"])
 def shutdown():
-    print(''' 
-        Select the module you would like to start:
-                    1) Reading
-                    2) Listening
-                    3) Writing
-                    4) Speaking
-                    5) Your Profile
-                    6) Log Out
-                    7) Exit the System
-    ''')
+    print(' ╔' + ('-' * 149) + '╗')
+    print(' ¦                                                                  MAIN MENU' + (
+            ' ' * 74) + '¦')
+    print(' ¦' + ('-' * 149) + '¦')
+    print(' ¦' + (' ' * 149) + '¦')
+    print(
+        ' ¦        [1] Reading        [2] Listening      [3] Writing        [4] Speaking       [5] Profile        [6] Log Out        [7] Exit the System        ¦')
+    print(' ¦' + (' ' * 149) + '¦')
+    print(' ╚' + ('-' * 149) + '╝')
+    print('\n')
+    user_input = input('                        What do you want to do next? ')
+    print('\n' * 10)
+    #print('''
+    #    Select the module you would like to start:
+    #                1) Reading
+    #                2) Listening
+    #                3) Writing
+    #                4) Speaking
+    #                5) Your Profile
+    #                6) Log Out
+    #                7) Exit the System
+    #''')
     shutdown_server()
     return 'Server Shutting down'
 

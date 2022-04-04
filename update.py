@@ -24,4 +24,6 @@ def update(email, username, mycursor, mydb, module_number, module_name, temp_mar
     val = (fordb, email)
     mycursor.execute(sql, val)
     mydb.commit()
-    print(mycursor.rowcount, "Record Updated")
+    # print(mycursor.rowcount, "Record Updated")
+    print('\n')
+    print(f"                        Record Updated: {mycursor.rowcount}")
