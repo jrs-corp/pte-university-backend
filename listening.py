@@ -33,7 +33,9 @@ def listening(email, username, mycursor, mydb):
         temp_answers = entity['Answers'].split(',')
         # # Showing the question
         # print('Playing Audio ...')
-        print(f"                        Playing Audio in the backgroud, Please listen carefully...   ")#{entity['Question']} ...")
+        print(f'''                        Playing Audio in the backgroud, Please listen carefully...   
+                                We will give you one minute of buffer time to think and process about the question
+                                        ''')#{entity['Question']} ...")
         filename = entity['Question'] + '.mp3'
         # playsound('Audio1.mp3')
         playsound(filename)

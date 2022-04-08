@@ -44,6 +44,7 @@ schema\
 .has().uppercase()\
 .has().lowercase()\
 .has().digits()\
+.has().symbols()\
 .has().no().spaces()\
 
 # # Parsing the configuration file
@@ -152,6 +153,12 @@ def main():
                 if schema.validate(userpassword_desired) == True:
                     check_password_status1 = False
                 else:
+                    print(f'''Your password must contain:
+                                1) Minimum of 8 Characters
+                                2) Has Uppercase and Lowercase
+                                3) Has digits
+                                4) Has no spaces
+                                5) Has special characters''')
                     userpassword_desired = getpass('   Invalid!             Enter the Password   : ')
             # # Validate the password
 
