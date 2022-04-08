@@ -22,18 +22,25 @@ key = config['WRITING']['key']
 text_analytics_client = TextAnalyticsClient(endpoint=endpoint, credential=AzureKeyCredential(key))
 
 def writing(email, username, mycursor, mydb):
+    # header
+    print('\n')
+    print(' ╔' + ('-' * 149) + '╗')
+    print(' ¦' + (' ' * 60) + 'PTE PRACTICE - WRITING' + (' ' * 67) + '¦')
+    print(' ╚' + ('-' * 149) + '╝')
+    print('\n')
+
     temp_marks = 0
     # # Looping through the writing questions
     for entity in entities:
         temp_answers = entity['Answers'].split(',')
         total_score = entity['Blanks']
         # # Showing the question
-        print(entity['Question'])
-        print(temp_answers)
+        # print(entity['Question'])   # hide for testing
+        # print(temp_answers)         # hide for testing
         pass_status = True
 
         # # Asking for answers - One time as this in an essay
-        input_answer = input(f"{entity['Question']}: ")
+        input_answer = input(f"                        {entity['Question']}: ")
         articles = [ input_answer ]
         result = text_analytics_client.extract_key_phrases(articles)
 
@@ -47,6 +54,8 @@ def writing(email, username, mycursor, mydb):
         # if quit_status == 'Y' or quit_status == 'y':
         break
         print('-'*30)
-    final_marks = temp_marks * 100 / total_score
-    print('The final marks: ', final_marks)
+    print('\n')
+    final_marks = int(temp_marks * 100 / total_score)
+    print('                        The final marks: ', temp_marks)
+    print(f'                        The percent marks: {final_marks}')
     update(email, username, mycursor, mydb, 6, 'writing', final_marks)
