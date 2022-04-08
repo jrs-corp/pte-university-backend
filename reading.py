@@ -65,14 +65,24 @@ def reading(email, username, mycursor, mydb):
             temp_marks += 1
         total_marks += 1
         print('\n')
-        quit_status = input('                        Do you want to take a break? ')
+        quit_status = input('                        Do you want to take a break(Y/N)? ')
         print('\n')
         print('\n' * 10)
-        if quit_status == 'Y' or quit_status == 'y':
+        check_status = True
+        exit_status = True
+        while check_status == True:
+            if quit_status == 'Y' or quit_status == 'y':
+                check_status = False
+                exit_status = False
+            elif quit_status == 'N' or quit_status == 'n':
+                check_status = False
+            else:
+                quit_status = input('                   Wrong Command, Please Try Again(Y/N)? ')
+        if check_status == False and exit_status == False:
             break
         # print('-'*30)
     print('\n')
     print('                        The final marks      : ', temp_marks)
-    percent_marks = (temp_marks / total_marks) * 100
+    percent_marks = int((temp_marks / total_marks) * 100)
     print('                        The percent marks    : ', percent_marks)
     update(email, username, mycursor, mydb, 7, 'reading', percent_marks)

@@ -55,6 +55,7 @@ def writing(email, username, mycursor, mydb):
         break
         print('-'*30)
     print('\n')
-    final_marks = temp_marks * 100 / total_score
-    print('                        The final marks: ', final_marks)
+    final_marks = int(temp_marks * 100 / total_score)
+    # print('                        The final marks: ', final_marks)
+    print(f'                        The final marks: {final_marks}%')
     update(email, username, mycursor, mydb, 6, 'writing', final_marks)

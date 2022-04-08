@@ -101,7 +101,7 @@ def gettonguetwister():
     tonguetwisters = []
     for entity in entities:
         tonguetwisters.append(entity['Question'])
-    print(tonguetwisters)
+    # print(tonguetwisters)
     return jsonify({"tt":random.choice(tonguetwisters)})
 
 @app.route("/ackaud", methods=["POST"])
@@ -158,7 +158,7 @@ def ackaud():
     fluency_score = temp_data['NBest'][0]['FluencyScore']
     completeness_score = temp_data['NBest'][0]['CompletenessScore']
     pron_score = temp_data['NBest'][0]['PronScore']
-    temp_score = (accuracy_score + fluency_score + completeness_score + pron_score ) / 4
+    temp_score = int((accuracy_score + fluency_score + completeness_score + pron_score ) / 4)
     email = os.environ.get('FLASK_EMAIL')
     username = os.environ.get('FLASK_USR')
     update(email, username, mycursor, mydb, 4, 'speaking', temp_score)

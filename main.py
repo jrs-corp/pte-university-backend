@@ -31,6 +31,20 @@ from reading import reading
 from listening import listening
 # from speaking import speaking
 from read import read, check, get, set
+from email_validator import validate_email, EmailNotValidError
+from password_validator import PasswordValidator
+
+# Create a schema
+schema = PasswordValidator()
+
+# Add properties to it
+schema\
+.min(8)\
+.max(32)\
+.has().uppercase()\
+.has().lowercase()\
+.has().digits()\
+.has().no().spaces()\
 
 # # Parsing the configuration file
 config = configparser.ConfigParser()
@@ -79,6 +93,17 @@ def main():
         print(' ╚'+('-' * 149)+ '╝')
         print('\n')
         first_input = input('                        What would you like to do? ')
+
+        # # Validate for input
+        check_first_input = True
+        while check_first_input == True:
+            if first_input.isnumeric() == True:
+                check_first_input = False
+            else:
+                first_input = input('      Invalid!          What would you like to do? ')
+
+        # # Validate for input
+
         print('\n' * 10)
         # print('-'*30)
         #first_input = input('''
@@ -101,7 +126,35 @@ def main():
             # print('Registration')
             username_desired = input('                        Enter the User Name  :  ')
             useremail_desired = input('                        Enter the User Email :  ')
+
+            # # Validate the Email
+            check_email_status1 = True
+            while check_email_status1 == True:
+                try:
+                    # Validate.
+                    valid = validate_email(useremail_desired)
+
+                    # Update with the normalized form.
+                    # email = valid.email
+                    check_email_status1 = False
+                except EmailNotValidError as e:
+                    # email is not valid, exception message is human-readable
+                    print(str(e))
+                    # print('The email is invalid')
+                    useremail_desired = input('Invalid!                Enter the User Email :  ')
+            # # Validate the Email
+
             userpassword_desired = getpass('                        Enter the Password   : ')
+
+            # # Validate the password
+            check_password_status1 = True
+            while check_password_status1 == True:
+                if schema.validate(userpassword_desired) == True:
+                    check_password_status1 = False
+                else:
+                    userpassword_desired = getpass('   Invalid!             Enter the Password   : ')
+            # # Validate the password
+
             print('\n')
             pass_hash = hashlib.md5(str(userpassword_desired).encode('utf-8')).hexdigest()
 
@@ -124,8 +177,8 @@ def main():
             print(' ╚' + ('-' * 149) + '╝')
             #print('Login')
             print('\n')
-            useremail_input = input('                        Enter the User Name    :  ')
-            userpassword_input = getpass('                        Enter the Password    : ')
+            useremail_input = input('                        Enter the Email        :  ')
+            userpassword_input = getpass('                        Enter the Password     : ')
             print('\n')
 
             pass_hash = hashlib.md5(str(userpassword_input).encode('utf-8')).hexdigest()
@@ -173,6 +226,16 @@ def main():
                     print('\n')
                     user_input = input('                        What do you want to do next? ')
                     print('\n' * 10)
+
+                    # # Validate for user_input            
+                    check_user_input = True
+                    while check_user_input == True:
+                        if user_input.isnumeric() == True:
+                            check_user_input = False
+                        else:
+                            user_input = input('      Invalid!          What do you want to do next? ')
+                    # # Validate for user_input
+
                     #user_input = input('''
                     #
                     #Select the module you would like to start:
