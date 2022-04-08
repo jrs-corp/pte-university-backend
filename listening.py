@@ -33,7 +33,7 @@ def listening(email, username, mycursor, mydb):
         temp_answers = entity['Answers'].split(',')
         # # Showing the question
         # print('Playing Audio ...')
-        print(f"                        Playing Audio in the backgroud, Please listen carefully   ")#{entity['Question']} ...")
+        print(f"                        Playing Audio in the backgroud, Please listen carefully...   ")#{entity['Question']} ...")
         filename = entity['Question'] + '.mp3'
         # playsound('Audio1.mp3')
         playsound(filename)
@@ -58,7 +58,7 @@ def listening(email, username, mycursor, mydb):
         total_marks += 1
         # quit_status = input('Do you want to take a break? ')
         print('\n')
-        quit_status = input('                        Do you want to take a break? ')
+        quit_status = input('                        Do you want to take a break(Y/N)? ')
         print('\n')
         print('\n' * 10)
         check_status = True
