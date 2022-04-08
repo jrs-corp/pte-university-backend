@@ -101,8 +101,10 @@ def main():
             if first_input.isnumeric() == True:
                 check_first_input = False
             else:
-                first_input = input('      Invalid!          What would you like to do? ')
+                # first_input = input('      Invalid!          What would you like to do? ')
+                first_input = input(f'''\n                        Invalid!  
 
+                        What would you like to do? ''')
         # # Validate for input
 
         print('\n' * 10)
@@ -140,9 +142,12 @@ def main():
                     check_email_status1 = False
                 except EmailNotValidError as e:
                     # email is not valid, exception message is human-readable
-                    print(str(e))
+                    print(f'\n                        {str(e)}')
                     # print('The email is invalid')
-                    useremail_desired = input('Invalid!                Enter the User Email :  ')
+                    # useremail_desired = input('Invalid!                Enter the User Email :  ')
+                    useremail_desired = input(f'''\n                        Invalid!  
+                               
+                        Enter the User Email :  ''')
             # # Validate the Email
 
             userpassword_desired = getpass('                        Enter the Password   : ')
@@ -153,13 +158,17 @@ def main():
                 if schema.validate(userpassword_desired) == True:
                     check_password_status1 = False
                 else:
-                    print(f'''Your password must contain:
+                    print(f'''\n                        Your password must contain:
                                 1) Minimum of 8 Characters
                                 2) Has Uppercase and Lowercase
                                 3) Has digits
                                 4) Has no spaces
                                 5) Has special characters''')
-                    userpassword_desired = getpass('   Invalid!             Enter the Password   : ')
+                    print('\n')
+                    userpassword_desired = getpass(f'''\n                        Invalid!  
+                               
+                        Enter the Password   : ''')
+                    print('\n')
             # # Validate the password
 
             print('\n')
@@ -232,7 +241,7 @@ def main():
                     print(' ╚' + ('-' * 149) + '╝')
                     print('\n')
                     user_input = input('                        What do you want to do next? ')
-                    print('\n' * 10)
+                    # print('\n' * 10)
 
                     # # Validate for user_input            
                     check_user_input = True
@@ -240,7 +249,10 @@ def main():
                         if user_input.isnumeric() == True:
                             check_user_input = False
                         else:
-                            user_input = input('      Invalid!          What do you want to do next? ')
+                            user_input = input(f'''\n                        Invalid!  
+
+                        What do you want to do next? ''')
+                            # user_input = input('      Invalid!          What do you want to do next? ')
                     # # Validate for user_input
 
                     #user_input = input('''

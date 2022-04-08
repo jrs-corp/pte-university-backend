@@ -67,7 +67,7 @@ def reading(email, username, mycursor, mydb):
         print('\n')
         quit_status = input('                        Do you want to take a break(Y/N)? ')
         print('\n')
-        print('\n' * 10)
+        # print('\n' * 10)
         check_status = True
         exit_status = True
         while check_status == True:
@@ -77,7 +77,10 @@ def reading(email, username, mycursor, mydb):
             elif quit_status == 'N' or quit_status == 'n':
                 check_status = False
             else:
-                quit_status = input('                   Wrong Command, Please Try Again(Y/N)? ')
+                # quit_status = input('                   Wrong Command, Please Try Again(Y/N)? ')
+                quit_status = input(f'''\n                        Wrong Command.  
+
+                        Please Try Again(Y/N)? ''')
         if check_status == False and exit_status == False:
             break
         # print('-'*30)
