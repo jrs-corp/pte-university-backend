@@ -28,7 +28,7 @@ Since many years ago, the English language has been an angular stone for people 
 
 Additionally, pandemic has pushed new opportunities and open borders for professionals working remotely; however, many people still need to get prepared in the English language. Despite there being many options in the market, many of them are too expensive and unreachable for many, and furthermore, students need to be present in the place. 
 
-Also exist some virtual option however, the price is still too high (see figure 3), but AI technology lets to develop tools to learn English and simulate tests as well as TOEFL and IELTS with lower costs 
+Also exist some virtual option however, the price is still too high, but AI technology lets to develop tools to learn English and simulate tests as well as TOEFL and IELTS with lower costs 
 
  
 
